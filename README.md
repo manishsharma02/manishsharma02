@@ -1,16 +1,70 @@
-## Hi there 👋
+👋 Hi, I'm Manish Sharma
 
-<!--
-**manishsharma02/manishsharma02** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+🚀 Computer Science & AI Developer
+💻 Full-Stack Developer | Backend Developer | AI Enthusiast
 
-Here are some ideas to get you started:
+I build real-world web applications and AI-powered solutions
+using modern technologies, scalable architectures and cloud platforms.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+🎓 Computer Science & Artificial Intelligence
+🌱 Currently learning: AI, Backend Engineering, Cloud & System Design
+🤝 Open to internships, collaborations and exciting projects
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🛠️ TECH STACK
+
+Languages
+JavaScript • TypeScript • Python • Java • C++ • SQL
+
+Frontend
+React • HTML • CSS • Tailwind CSS
+
+Backend
+Node.js • Express.js • REST APIs
+
+Database
+MongoDB • MySQL • Supabase
+
+AI
+Generative AI • Gemini API • LangChain • AI Agents
+
+Cloud & Tools
+Google Cloud • Firebase • Git • GitHub • Docker • Postman
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 FEATURED PROJECTS
+
+💻 VidX
+Online coding platform with code execution,
+problem solving and programming workflows.
+
+📊 Investo
+AI-powered startup/investment analysis platform.
+
+🔐 CyberSecure / Velora
+Security-focused / full-stack application.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+📈 GITHUB STATISTICS
+
+[GitHub Stats]
+[Top Languages]
+[Contribution Graph]
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🏆 ACHIEVEMENTS
+
+☁️ Google Cloud Skills
+💻 Full-Stack Development
+🤖 AI / Generative AI
+🚀 Hackathons & Projects
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+📫 CONNECT WITH ME
+
+LinkedIn • Email • Portfolio • GitHub
