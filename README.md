@@ -75,7 +75,7 @@ continuously improving my engineering skills.
   <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" />
 </p>
 
----
+
 
 ## 📈 GitHub Activity
 
@@ -89,19 +89,12 @@ continuously improving my engineering skills.
 
 ---
 
+
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img
-    src="https://github-readme-stats.vercel.app/api?username=manishsharma02&show_icons=true&hide_border=true&theme=default&rank_icon=github"
-    alt="GitHub Stats"
-    width="49%"
-  />
-  <img
-    src="https://github-readme-stats.vercel.app/api/top-langs/?username=manishsharma02&layout=compact&hide_border=true&theme=default&langs_count=8"
-    alt="Top Languages"
-    width="49%"
-  />
+  <img src="./profile/stats.svg" width="49%" alt="GitHub Stats" />
+  <img src="./profile/top-langs.svg" width="49%" alt="Top Languages" />
 </p>
 ---
 
