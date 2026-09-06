@@ -35,7 +35,7 @@ jobs:
         uses: maurodesouza/github-readme-activity-graph-action@v1
         with:
           username: ${{ github.repository_owner }}
-          options: theme=github&hide_border=true&area=true
+          options: theme=github-light&hide_border=true&area=true&radius=8&line=2ea44f&point=2ea44f&area_color=2ea44f
           output_path: profile/activity-graph.svg
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit Stats
