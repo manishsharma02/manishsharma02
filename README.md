@@ -76,7 +76,6 @@ continuously improving my engineering skills.
 </p>
 
 ---
-
 ---
 
 ## 📈 GitHub Activity
@@ -102,5 +101,5 @@ continuously improving my engineering skills.
     height="170"
   />
 </p>
-  <i>Building • Learning • Exploring AI • Growing as a Developer 🚀</i>
-</p>
+---
+
