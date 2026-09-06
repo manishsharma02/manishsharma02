@@ -45,6 +45,9 @@ jobs:
       # --------------------------------
       # Generate Contribution Calendar
       # --------------------------------
+      # --------------------------------
+      # Generate GitHub Contribution Calendar
+      # --------------------------------
       - name: Generate Contribution Calendar
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -53,7 +56,7 @@ jobs:
           import os
           import re
           import urllib.request
-          from datetime import datetime
+          from datetime import datetime, timedelta
 
           username = os.environ["GITHUB_USERNAME"]
 
@@ -68,14 +71,18 @@ jobs:
 
           html = urllib.request.urlopen(request).read().decode("utf-8")
 
-          # Find all contribution calendar cells
-          pattern = r'<td[^>]*ContributionCalendar-day[^>]*>'
+          # --------------------------------
+          # READ GITHUB CONTRIBUTION CELLS
+          # --------------------------------
 
-          cell_tags = re.findall(pattern, html)
+          tags = re.findall(
+              r'<td[^>]*ContributionCalendar-day[^>]*>',
+              html
+          )
 
-          cells = []
+          contributions = {}
 
-          for tag in cell_tags:
+          for tag in tags:
 
               date_match = re.search(
                   r'data-date="([^"]+)"',
@@ -92,69 +99,99 @@ jobs:
                   date = datetime.strptime(
                       date_match.group(1),
                       "%Y-%m-%d"
-                  )
+                  ).date()
 
                   level = int(
                       level_match.group(1)
                   )
 
-                  cells.append(
+                  contributions[date] = level
+
+          if not contributions:
+              raise Exception(
+                  "Could not read GitHub contribution calendar."
+              )
+
+          print(
+              f"Found {len(contributions)} contribution days."
+          )
+
+          # --------------------------------
+          # CREATE LAST 53 WEEKS
+          # --------------------------------
+
+          latest_date = max(contributions.keys())
+
+          # GitHub calendar weeks run Sunday -> Saturday.
+          last_sunday = latest_date - timedelta(
+              days=(latest_date.weekday() + 1) % 7
+          )
+
+          first_sunday = last_sunday - timedelta(
+              weeks=52
+          )
+
+          weeks = []
+
+          current = first_sunday
+
+          for week_number in range(53):
+
+              week = []
+
+              for row in range(7):
+
+                  day = current + timedelta(
+                      days=row
+                  )
+
+                  level = contributions.get(
+                      day,
+                      0
+                  )
+
+                  week.append(
                       {
-                          "date": date,
+                          "date": day,
                           "level": level
                       }
                   )
 
-          if not cells:
-              raise Exception(
-                  "GitHub contribution calendar could not be read."
+              weeks.append(week)
+
+              current += timedelta(
+                  weeks=1
               )
-
-          print(
-              f"Found {len(cells)} contribution days."
-          )
-
-          # Latest 53 weeks
-          cells = cells[-371:]
-
-          # Remove incomplete beginning
-          remainder = len(cells) % 7
-
-          if remainder:
-              cells = cells[remainder:]
-
-          weeks = []
-
-          for i in range(0, len(cells), 7):
-
-              week = cells[i:i + 7]
-
-              if len(week) == 7:
-                  weeks.append(week)
 
           # --------------------------------
           # SVG SETTINGS
           # --------------------------------
 
-          cell_size = 12
+          cell = 11
           gap = 3
 
-          left = 42
+          left = 32
+          right = 18
           top = 32
+          bottom = 38
+
+          columns = len(weeks)
 
           width = (
               left
-              + len(weeks) * (cell_size + gap)
-              + 15
+              + columns * (cell + gap)
+              - gap
+              + right
           )
 
           height = (
               top
-              + 7 * (cell_size + gap)
-              + 45
+              + 7 * (cell + gap)
+              - gap
+              + bottom
           )
 
-          # GitHub-style contribution colors
+          # GitHub-style colors
           colors = {
               0: "#ebedf0",
               1: "#9be9a8",
@@ -172,35 +209,40 @@ jobs:
               f'viewBox="0 0 {width} {height}">'
           )
 
-          # Background
+          # --------------------------------
+          # BACKGROUND
+          # --------------------------------
+
           svg.append(
               f'<rect width="{width}" '
               f'height="{height}" '
-              f'fill="#ffffff" rx="6"/>'
+              f'fill="#ffffff"/>'
           )
 
           # --------------------------------
           # DAY LABELS
           # --------------------------------
 
-          day_labels = {
+          labels = {
               1: "Mon",
               3: "Wed",
               5: "Fri"
           }
 
-          for row, label in day_labels.items():
+          for row, label in labels.items():
 
               y = (
                   top
-                  + row * (cell_size + gap)
-                  + 10
+                  + row * (cell + gap)
+                  + 9
               )
 
               svg.append(
-                  f'<text x="2" y="{y}" '
+                  f'<text '
+                  f'x="0" '
+                  f'y="{y}" '
                   f'font-family="Arial, sans-serif" '
-                  f'font-size="10" '
+                  f'font-size="9" '
                   f'fill="#57606a">'
                   f'{label}'
                   f'</text>'
@@ -214,15 +256,19 @@ jobs:
 
           for x, week in enumerate(weeks):
 
-              date = week[0]["date"]
+              first_day = week[0]["date"]
 
-              if date.month != previous_month:
+              month = first_day.month
 
-                  month = date.strftime("%b")
+              if month != previous_month:
+
+                  month_name = first_day.strftime(
+                      "%b"
+                  )
 
                   x_position = (
                       left
-                      + x * (cell_size + gap)
+                      + x * (cell + gap)
                   )
 
                   svg.append(
@@ -230,23 +276,28 @@ jobs:
                       f'x="{x_position}" '
                       f'y="16" '
                       f'font-family="Arial, sans-serif" '
-                      f'font-size="11" '
+                      f'font-size="10" '
                       f'fill="#24292f">'
-                      f'{month}'
+                      f'{month_name}'
                       f'</text>'
                   )
 
-                  previous_month = date.month
+                  previous_month = month
 
           # --------------------------------
           # CONTRIBUTION BOXES
           # --------------------------------
 
+          total_contributions = 0
+
           for x, week in enumerate(weeks):
 
-              for y, cell in enumerate(week):
+              for row, item in enumerate(week):
 
-                  level = cell["level"]
+                  level = item["level"]
+
+                  if level > 0:
+                      total_contributions += 1
 
                   color = colors.get(
                       level,
@@ -255,15 +306,17 @@ jobs:
 
                   x_position = (
                       left
-                      + x * (cell_size + gap)
+                      + x * (cell + gap)
                   )
 
                   y_position = (
                       top
-                      + y * (cell_size + gap)
+                      + row * (cell + gap)
                   )
 
-                  date_text = cell["date"].strftime(
+                  date_text = item[
+                      "date"
+                  ].strftime(
                       "%b %d, %Y"
                   )
 
@@ -271,20 +324,22 @@ jobs:
                       f'<rect '
                       f'x="{x_position}" '
                       f'y="{y_position}" '
-                      f'width="{cell_size}" '
-                      f'height="{cell_size}" '
-                      f'rx="2" ry="2" '
+                      f'width="{cell}" '
+                      f'height="{cell}" '
+                      f'rx="2" '
+                      f'ry="2" '
                       f'fill="{color}">'
                   )
 
                   svg.append(
                       f'<title>'
-                      f'{date_text}: '
-                      f'contribution level {level}'
+                      f'{date_text}'
                       f'</title>'
                   )
 
-                  svg.append("</rect>")
+                  svg.append(
+                      '</rect>'
+                  )
 
           # --------------------------------
           # LEGEND
@@ -292,8 +347,8 @@ jobs:
 
           legend_y = (
               top
-              + 7 * (cell_size + gap)
-              + 22
+              + 7 * (cell + gap)
+              + 21
           )
 
           svg.append(
@@ -301,7 +356,7 @@ jobs:
               f'x="{left}" '
               f'y="{legend_y}" '
               f'font-family="Arial, sans-serif" '
-              f'font-size="10" '
+              f'font-size="9" '
               f'fill="#57606a">'
               f'Less'
               f'</text>'
@@ -311,61 +366,13 @@ jobs:
 
               x_position = (
                   left
-                  + 30
-                  + i * (cell_size + gap)
+                  + 27
+                  + i * (cell + gap)
               )
 
               svg.append(
                   f'<rect '
                   f'x="{x_position}" '
-                  f'y="{legend_y - 10}" '
-                  f'width="{cell_size}" '
-                  f'height="{cell_size}" '
-                  f'rx="2" '
-                  f'fill="{colors[i]}"/>'
-              )
-
-          svg.append(
-              f'<text '
-              f'x="{left + 30 + 5 * (cell_size + gap) + 5}" '
-              f'y="{legend_y}" '
-              f'font-family="Arial, sans-serif" '
-              f'font-size="10" '
-              f'fill="#57606a">'
-              f'More'
-              f'</text>'
-          )
-
-          svg.append("</svg>")
-
-          # --------------------------------
-          # SAVE SVG
-          # --------------------------------
-
-          os.makedirs(
-              "profile",
-              exist_ok=True
-          )
-
-          output_file = (
-              "profile/activity-graph.svg"
-          )
-
-          with open(
-              output_file,
-              "w",
-              encoding="utf-8"
-          ) as file:
-
-              file.write(
-                  "\n".join(svg)
-              )
-
-          print(
-              f"Successfully generated: {output_file}"
-          )
-          PY
-
       # --------------------------------
       # Commit Generated Files
       # --------------------------------
