@@ -76,13 +76,13 @@ continuously improving my engineering skills.
 </p>
 
 ---
----
 
 ## 📈 GitHub Activity
 
 <p align="center">
   <img
-    src="https://github-readme-activity-graph.vercel.app/graph?username=manishsharma02&theme=github-compact&hide_border=true"
+    src="https://github-readme-activity-graph.vercel.app/graph?username=manishsharma02&theme=github-compact&hide_border=true&area=true"
+    alt="GitHub Activity Graph"
     width="100%"
   />
 </p>
@@ -93,12 +93,14 @@ continuously improving my engineering skills.
 
 <p align="center">
   <img
-    src="https://github-readme-stats.vercel.app/api?username=manishsharma02&show_icons=true&hide_border=true&theme=default"
-    height="170"
+    src="https://github-readme-stats.vercel.app/api?username=manishsharma02&show_icons=true&hide_border=true&theme=default&rank_icon=github"
+    alt="GitHub Stats"
+    width="49%"
   />
   <img
     src="https://github-readme-stats.vercel.app/api/top-langs/?username=manishsharma02&layout=compact&hide_border=true&theme=default&langs_count=8"
-    height="170"
+    alt="Top Languages"
+    width="49%"
   />
 </p>
 ---
